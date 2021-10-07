@@ -7,5 +7,6 @@ export function findChangesByPath(changes: Change[], path: string) {
 }
 
 export function findFirstChangeByPath(changes: Change[], path: string) {
+  console.log({ changes })
   return findChangesByPath(changes, path)[0];
 }
