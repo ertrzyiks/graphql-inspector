@@ -103,9 +103,9 @@ export async function run() {
     ref = `refs/pull/${github.context.payload.pull_request.number}/merge`
     workspace = undefined;
     core.info(`EXPERIMENTAL - Using Pull Request ${ref}`)
-    
+
     const baseRef = github.context.payload.pull_request?.base?.ref;
-    
+
     if (baseRef) {
       schemaRef = baseRef
       core.info(`EXPERIMENTAL - Using ${baseRef} as base schema ref`)
@@ -195,6 +195,7 @@ export async function run() {
   } catch (e) {
     // Error
     core.error(e.message || e);
+    core.error(e.stack)
 
     const title = 'Invalid config. Failed to add annotation';
 
@@ -270,10 +271,10 @@ async function updateCheckRun(
   {conclusion, output}: UpdateCheckRunOptions,
 ) {
   core.info(`Updating check: ${checkId}`);
-  
+
   const {title, summary, annotations = []} = output;
   const batches = batch(annotations, 50);
-  
+
   core.info(`annotations to be sent: ${annotations.length}`);
 
   await octokit.checks.update({
@@ -294,7 +295,7 @@ async function updateCheckRun(
           check_run_id: checkId,
           ...github.context.repo,
           output: {
-            title, 
+            title,
             summary,
             annotations: chunk,
           },
